@@ -1,9 +1,11 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { CustomInput } from "@/components/ui/CustomInput";
+import CustomInput from "@/components/ui/CustomInput";
 import { Button } from "@/components/ui/button";
 import { Client } from "@/types/client";
+//import { motion, AnimatePresence } from "framer-motion";
+import { FaUser, FaPhone, FaMapMarkerAlt, FaEuroSign, FaCalendarAlt, FaClock } from "react-icons/fa";
 
 interface FormProps {
   onSubmitSuccess: (newClient: Client) => void;
@@ -13,7 +15,7 @@ interface FormProps {
 
 const Form = ({ onSubmitSuccess, editingClient, onCancelEdit }: FormProps) => {
   const isEditing = Boolean(editingClient);
-  
+
   const [formData, setFormData] = useState<Client>(
     editingClient || {
       nif: "",
@@ -37,6 +39,8 @@ const Form = ({ onSubmitSuccess, editingClient, onCancelEdit }: FormProps) => {
     numero: "",
     valor: "",
   });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Reset do formulário quando editingClient muda
   useEffect(() => {
@@ -74,17 +78,17 @@ const Form = ({ onSubmitSuccess, editingClient, onCancelEdit }: FormProps) => {
 
   const calcularValorComIva = (valor: string, taxa: '6' | '23' | '') => {
     if (!valor || !taxa) return '';
-    
+
     const valorNumerico = parseFloat(valor.replace(',', '.'));
     const taxaNumerico = parseFloat(taxa);
-    
+
     const valorComIva = valorNumerico * (1 + taxaNumerico / 100);
     return valorComIva.toFixed(2).replace('.', ',');
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { id, value } = e.target;
-    
+
     let valorFormatado = value;
 
     if (id === "nif" || id === "numero") {
@@ -94,7 +98,7 @@ const Form = ({ onSubmitSuccess, editingClient, onCancelEdit }: FormProps) => {
     if (id === "valor") {
       // Substituir vírgula por ponto para cálculos
       valorFormatado = value.replace(',', '.');
-      
+
       // Validar valor
       if (!/^\d+([.]\d{1,2})?$/.test(valorFormatado)) {
         setErrors({ ...errors, valor: "Valor inválido" });
@@ -107,9 +111,9 @@ const Form = ({ onSubmitSuccess, editingClient, onCancelEdit }: FormProps) => {
     if (id === "taxaIva") {
       // Calcular valor com IVA quando a taxa muda
       const valorComIva = calcularValorComIva(formData.valor, value as '6' | '23' | '');
-      
-      setFormData({ 
-        ...formData, 
+
+      setFormData({
+        ...formData,
         [id]: value as '6' | '23' | '',
         valorIva: valorComIva,
         valorTotal: valorComIva
@@ -123,8 +127,8 @@ const Form = ({ onSubmitSuccess, editingClient, onCancelEdit }: FormProps) => {
     // Se for valor, recalcula IVA se já tiver taxa selecionada
     if (id === "valor" && formData.taxaIva) {
       const valorComIva = calcularValorComIva(valorFormatado, formData.taxaIva as '6' | '23');
-      setFormData(prev => ({ 
-        ...prev, 
+      setFormData(prev => ({
+        ...prev,
         valor: valorFormatado,
         valorIva: valorComIva,
         valorTotal: valorComIva
@@ -137,39 +141,50 @@ const Form = ({ onSubmitSuccess, editingClient, onCancelEdit }: FormProps) => {
     if (id === "nif" || id === "numero") {
       const numeros = value.replace(/\D/g, "");
       if (numeros.length < 9) {
-        e.target.focus();
+        setErrors({ ...errors, [id]: `O ${id === "nif" ? "NIF" : "número"} deve ter 9 dígitos.` });
+      } else {
+        setErrors({ ...errors, [id]: "" });
       }
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
     const hasErrors = Object.values(errors).some((error) => error !== "");
     if (hasErrors) {
       alert("Por favor, corrija os erros antes de prosseguir.");
+      setIsSubmitting(false);
       return;
     }
 
     const isFormValid = Object.entries(formData).every(
-      ([key, value]) => 
-        key === "trabalhoConcluido" || 
-        key === "pagamentoRealizado" || 
-        key === "valorIva" || 
-        key === "taxaIva" || 
-        key === "valorTotal" || 
+      ([key, value]) =>
+        key === "trabalhoConcluido" ||
+        key === "pagamentoRealizado" ||
+        key === "valorIva" ||
+        key === "taxaIva" ||
+        key === "valorTotal" ||
         (typeof value === "string" && value.trim() !== "")
     );
 
     if (!isFormValid) {
       alert("Por favor, preencha todos os campos.");
+      setIsSubmitting(false);
       return;
     }
+
+    // Simula uma requisição assíncrona
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // Envia os dados para o componente pai
     onSubmitSuccess(formData);
 
-    // Se NÃO estiver editando, limpa o formulário
+    // Feedback visual
+    //alert(isEditing ? "Cliente atualizado com sucesso!" : "Cliente adicionado com sucesso!");
+
+    // Limpa o formulário se não estiver editando
     if (!isEditing) {
       setFormData({
         nif: "",
@@ -186,66 +201,57 @@ const Form = ({ onSubmitSuccess, editingClient, onCancelEdit }: FormProps) => {
         trabalhoConcluido: false,
         pagamentoRealizado: false,
       });
-
-      alert("Cliente adicionado com sucesso!");
-    } else {
-      // Se estiver editando
-      alert("Cliente atualizado com sucesso!");
-      
-      // Se existir a função de cancelar edição, chama ela
-      if (onCancelEdit) {
-        onCancelEdit();
-      }
     }
-  };
 
-  // Função para cancelar a edição
-  const handleCancel = () => {
-    if (onCancelEdit) {
-      onCancelEdit();
-    }
+    setIsSubmitting(false);
   };
 
   return (
-    <form className="space-y-3 sm:space-y-4" onSubmit={handleSubmit}>
+    <form className="space-y-4 sm:space-y-5" onSubmit={handleSubmit}>
+      {/* Campos do formulário com ícones e animações */}
       <CustomInput
-        label="Digite o NIF"
+        label="NIF"
         id="nif"
         placeholder="000-000-000"
         value={formData.nif}
         onChange={handleChange}
         onBlur={handleBlur}
         error={errors.nif}
+        icon={<FaUser className="text-gray-400" />}
       />
       <CustomInput
-        label="Digite o nome"
+        label="Nome"
         id="nome"
-        placeholder=""
+        placeholder="Nome completo"
         value={formData.nome}
         onChange={handleChange}
+        icon={<FaUser className="text-gray-400" />}
       />
       <CustomInput
-        label="Digite o número"
+        label="Número"
         id="numero"
         placeholder="000-000-000"
         value={formData.numero}
         onChange={handleChange}
         onBlur={handleBlur}
         error={errors.numero}
+        icon={<FaPhone className="text-gray-400" />}
       />
       <CustomInput
-        label="Digite o tipo de entulho"
+        label="Tipo de Entulho"
         id="tipo"
-        placeholder=""
+        placeholder="Tipo de entulho"
         value={formData.tipo}
         onChange={handleChange}
+        icon={<FaMapMarkerAlt className="text-gray-400" />}
       />
       <CustomInput
-        label="Digite o endereço"
+        label="Endereço"
         id="local"
-        placeholder=""
+        placeholder="Endereço completo"
         value={formData.local}
         onChange={handleChange}
+        icon={<FaMapMarkerAlt className="text-gray-400" />}
       />
       <CustomInput
         label="Valor do Serviço (€)"
@@ -254,8 +260,8 @@ const Form = ({ onSubmitSuccess, editingClient, onCancelEdit }: FormProps) => {
         value={formData.valor.replace('.', ',')}
         onChange={handleChange}
         error={errors.valor}
+        icon={<FaEuroSign className="text-gray-400" />}
       />
-      
       <div className="relative">
         <label className="block text-sm sm:text-base font-medium text-gray-700 mb-1">
           Selecione a taxa de IVA
@@ -271,45 +277,45 @@ const Form = ({ onSubmitSuccess, editingClient, onCancelEdit }: FormProps) => {
           <option value="23">IVA 23%</option>
         </select>
       </div>
-      
       {formData.valorIva && (
         <div className="bg-blue-50 p-3 rounded-md">
           <p className="font-medium">Valor com IVA: {formData.valorIva} €</p>
         </div>
       )}
-      
       <CustomInput
         label="Data"
         id="data"
         type="date"
+        placeholder=""
         value={formData.data}
         onChange={handleChange}
+        icon={<FaCalendarAlt className="text-gray-400" />}
       />
       <CustomInput
         label="Hora"
         id="hora"
         type="time"
+        placeholder=""
         value={formData.hora}
         onChange={handleChange}
+        icon={<FaClock className="text-gray-400" />}
       />
-      
       <div className="grid grid-cols-2 gap-3 mt-4">
-        <Button type="submit" className="py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium text-base">
-          {isEditing ? "Atualizar" : "Adicionar"}
+        <Button
+          type="submit"
+          className="py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium text-base"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "Processando..." : isEditing ? "Atualizar" : "Adicionar"}
         </Button>
-        
         {isEditing && (
-          <Button 
-            type="button" 
-            onClick={handleCancel} 
+          <Button
+            type="button"
+            onClick={onCancelEdit}
             className="py-3 bg-gray-500 hover:bg-gray-600 text-white font-medium text-base"
           >
             Cancelar
           </Button>
-        )}
-        
-        {isEditing ? null : (
-          <div></div>
         )}
       </div>
     </form>
