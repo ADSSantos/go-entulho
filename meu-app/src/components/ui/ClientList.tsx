@@ -244,8 +244,14 @@ const ClientList = () => {
                 <span className="font-medium">Endereço:</span>
                 <span>{client.local}</span>
                 
-                <span className="font-medium">Valor:</span>
-                <span>{client.valor}</span>
+                <span className="font-medium">Valor s/ IVA:</span>
+                <span>{client.valor} €</span>
+                
+                <span className="font-medium">Taxa IVA:</span>
+                <span>{client.taxaIva ? `${client.taxaIva}%` : 'N/A'}</span>
+                
+                <span className="font-medium">Valor c/ IVA:</span>
+                <span>{client.valorTotal} €</span>
                 
                 <span className="font-medium">Data:</span>
                 <span>{client.data}</span>

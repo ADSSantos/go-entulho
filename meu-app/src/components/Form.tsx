@@ -5,15 +5,13 @@ import { CustomInput } from "@/components/ui/CustomInput";
 import { Button } from "@/components/ui/button";
 import { Client } from "@/types/client";
 
-
 interface FormProps {
   onSubmitSuccess: (newClient: Client) => void;
   editingClient?: Client | null;
-  onCancelEdit?: () => void; // Nova prop para cancelar edição
+  onCancelEdit?: () => void;
 }
 
 const Form = ({ onSubmitSuccess, editingClient, onCancelEdit }: FormProps) => {
-  // Estado para controlar se estamos em modo de edição
   const isEditing = Boolean(editingClient);
   
   const [formData, setFormData] = useState<Client>(
@@ -24,12 +22,21 @@ const Form = ({ onSubmitSuccess, editingClient, onCancelEdit }: FormProps) => {
       tipo: "",
       local: "",
       valor: "",
+      valorIva: "",
+      taxaIva: "",
+      valorTotal: "",
       data: "",
       hora: "",
       trabalhoConcluido: false,
       pagamentoRealizado: false,
     }
   );
+
+  const [errors, setErrors] = useState({
+    nif: "",
+    numero: "",
+    valor: "",
+  });
 
   // Reset do formulário quando editingClient muda
   useEffect(() => {
@@ -43,6 +50,9 @@ const Form = ({ onSubmitSuccess, editingClient, onCancelEdit }: FormProps) => {
         tipo: "",
         local: "",
         valor: "",
+        valorIva: "",
+        taxaIva: "",
+        valorTotal: "",
         data: "",
         hora: "",
         trabalhoConcluido: false,
@@ -50,11 +60,6 @@ const Form = ({ onSubmitSuccess, editingClient, onCancelEdit }: FormProps) => {
       });
     }
   }, [editingClient]);
-
-  const [errors, setErrors] = useState({
-    nif: "",
-    numero: "",
-  });
 
   const formatarNumero = (valor: string) => {
     const numeros = valor.replace(/\D/g, "");
@@ -67,14 +72,18 @@ const Form = ({ onSubmitSuccess, editingClient, onCancelEdit }: FormProps) => {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { id, value, type, checked } = e.target;
+  const calcularValorComIva = (valor: string, taxa: '6' | '23' | '') => {
+    if (!valor || !taxa) return '';
     
-    // Tratamento especial para checkboxes
-    if (type === "checkbox") {
-      setFormData({ ...formData, [id]: checked });
-      return;
-    }
+    const valorNumerico = parseFloat(valor.replace(',', '.'));
+    const taxaNumerico = parseFloat(taxa);
+    
+    const valorComIva = valorNumerico * (1 + taxaNumerico / 100);
+    return valorComIva.toFixed(2).replace('.', ',');
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { id, value } = e.target;
     
     let valorFormatado = value;
 
@@ -82,33 +91,44 @@ const Form = ({ onSubmitSuccess, editingClient, onCancelEdit }: FormProps) => {
       valorFormatado = formatarNumero(value);
     }
 
-    if (
-      id === "nome" ||
-      id === "tipo" ||
-      id === "local" ||
-      id === "valor"
-    ) {
-      if (value.length > 30) {
-        setErrors({ ...errors, [id]: "Máximo de 30 caracteres permitido." });
+    if (id === "valor") {
+      // Substituir vírgula por ponto para cálculos
+      valorFormatado = value.replace(',', '.');
+      
+      // Validar valor
+      if (!/^\d+([.]\d{1,2})?$/.test(valorFormatado)) {
+        setErrors({ ...errors, valor: "Valor inválido" });
         return;
       } else {
-        setErrors({ ...errors, [id]: "" });
+        setErrors({ ...errors, valor: "" });
       }
     }
 
+    if (id === "taxaIva") {
+      // Calcular valor com IVA quando a taxa muda
+      const valorComIva = calcularValorComIva(formData.valor, value as '6' | '23' | '');
+      
+      setFormData({ 
+        ...formData, 
+        [id]: value as '6' | '23' | '',
+        valorIva: valorComIva,
+        valorTotal: valorComIva
+      });
+      return;
+    }
+
+    // Para outros campos, atualiza normalmente
     setFormData({ ...formData, [id]: valorFormatado });
 
-    if (id === "nif" || id === "numero") {
-      const numeros = valorFormatado.replace(/\D/g, "");
-      if (numeros.length > 9) {
-        setErrors({ ...errors, [id]: "Máximo de 9 dígitos permitido." });
-      } else if (numeros.length < 9) {
-        setErrors({ ...errors, [id]: "Digite exatamente 9 dígitos." });
-      } else if (!/^\d*$/.test(numeros)) {
-        setErrors({ ...errors, [id]: "Apenas números são permitidos." });
-      } else {
-        setErrors({ ...errors, [id]: "" });
-      }
+    // Se for valor, recalcula IVA se já tiver taxa selecionada
+    if (id === "valor" && formData.taxaIva) {
+      const valorComIva = calcularValorComIva(valorFormatado, formData.taxaIva as '6' | '23');
+      setFormData(prev => ({ 
+        ...prev, 
+        valor: valorFormatado,
+        valorIva: valorComIva,
+        valorTotal: valorComIva
+      }));
     }
   };
 
@@ -132,8 +152,15 @@ const Form = ({ onSubmitSuccess, editingClient, onCancelEdit }: FormProps) => {
     }
 
     const isFormValid = Object.entries(formData).every(
-      ([key, value]) => key === "trabalhoConcluido" || key === "pagamentoRealizado" || (typeof value === "string" && value.trim() !== "")
+      ([key, value]) => 
+        key === "trabalhoConcluido" || 
+        key === "pagamentoRealizado" || 
+        key === "valorIva" || 
+        key === "taxaIva" || 
+        key === "valorTotal" || 
+        (typeof value === "string" && value.trim() !== "")
     );
+
     if (!isFormValid) {
       alert("Por favor, preencha todos os campos.");
       return;
@@ -151,6 +178,9 @@ const Form = ({ onSubmitSuccess, editingClient, onCancelEdit }: FormProps) => {
         tipo: "",
         local: "",
         valor: "",
+        valorIva: "",
+        taxaIva: "",
+        valorTotal: "",
         data: "",
         hora: "",
         trabalhoConcluido: false,
@@ -218,12 +248,36 @@ const Form = ({ onSubmitSuccess, editingClient, onCancelEdit }: FormProps) => {
         onChange={handleChange}
       />
       <CustomInput
-        label=""
+        label="Valor do Serviço (€)"
         id="valor"
-        placeholder="000"
-        value={formData.valor}
+        placeholder="Valor sem IVA"
+        value={formData.valor.replace('.', ',')}
         onChange={handleChange}
+        error={errors.valor}
       />
+      
+      <div className="relative">
+        <label className="block text-sm sm:text-base font-medium text-gray-700 mb-1">
+          Selecione a taxa de IVA
+        </label>
+        <select
+          id="taxaIva"
+          value={formData.taxaIva}
+          onChange={handleChange}
+          className="w-full p-3 text-base border-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+        >
+          <option value="">Selecione a taxa de IVA</option>
+          <option value="6">IVA 6%</option>
+          <option value="23">IVA 23%</option>
+        </select>
+      </div>
+      
+      {formData.valorIva && (
+        <div className="bg-blue-50 p-3 rounded-md">
+          <p className="font-medium">Valor com IVA: {formData.valorIva} €</p>
+        </div>
+      )}
+      
       <CustomInput
         label="Data"
         id="data"
@@ -255,7 +309,7 @@ const Form = ({ onSubmitSuccess, editingClient, onCancelEdit }: FormProps) => {
         )}
         
         {isEditing ? null : (
-          <div></div> // Espaço vazio para manter o grid alinhado quando não há botão cancelar
+          <div></div>
         )}
       </div>
     </form>
