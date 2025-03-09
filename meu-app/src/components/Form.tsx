@@ -276,13 +276,13 @@ const Form = ({ onSubmitSuccess, editingClient, onCancelEdit }: FormProps) => {
           className="w-full p-3 text-base border-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
         >
           <option value="">Selecione a taxa de IVA</option>
-          <option value="6">IVA 6%</option>
+          <option value="6" className="text-gray-600">IVA 6%</option>
           <option value="23">IVA 23%</option>
         </select>
       </div>
       {formData.valorIva && (
         <div className="bg-blue-50 p-3 rounded-md">
-          <p className="font-medium">Valor com IVA: {formData.valorIva} €</p>
+          <p className="font-medium text-gray-400">Valor com IVA: {formData.valorIva} €</p>
         </div>
       )}
 
@@ -292,7 +292,7 @@ const Form = ({ onSubmitSuccess, editingClient, onCancelEdit }: FormProps) => {
         placeholder="Valor Da Descarga"
         value={formData.descarga}
         onChange={handleChange}
-        icon={<FaLevelDownAlt className="text-gray-400" />}
+        icon={<FaLevelDownAlt className="text-gray-300" />}
       />
 
       <CustomInput
