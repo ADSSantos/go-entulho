@@ -185,7 +185,7 @@ const ClientList = () => {
       // Limpar o destaque após 3 segundos
       setTimeout(() => {
         setFoundClientNif(null);
-      }, 3000);
+      }, 5000);
     } else {
       // Não encontrou nenhum cliente
       toast.error("Nenhum cliente encontrado com este número.");
@@ -305,42 +305,45 @@ const ClientList = () => {
                     : "bg-white"
                 }`}
               >
-                <h3 className="font-bold text-lg">{client.nome}</h3>
-                <div className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1 mt-2">
-                  <span className="font-medium">NIF:</span>
-                  <span>{client.nif}</span>
+                <h3 className="text-xl font-bold text-gray-500">{client.nome}</h3>
+                <div className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1 mt-2 ">
+                  <span className="font-medium text-gray-500">NIF:</span>
+                  <span  className="font-medium text-gray-500">{client.nif}</span>
 
-                  <span className="font-medium">Número:</span>
-                  <span className={foundClientNif === client.nif ? "font-bold bg-yellow-200 px-1" : ""}>
+                  <span className="font-medium  text-gray-500 ">Número:</span>
+                  <span className={foundClientNif === client.nif ? " font-bold bg-yellow-200 px-1" : "text-gray-500 font-medium "} >
                     {client.numero}
                   </span>
 
-                  <span className="font-medium">Tipo:</span>
-                  <span>{client.tipo}</span>
+                  <span className="font-medium  text-gray-500">Tipo:</span>
+                  <span className="font-medium  text-gray-500">{client.tipo}</span>
 
-                  <span className="font-medium">Endereço:</span>
-                  <span>{client.local}</span>
+                  <span className="font-medium  text-gray-500">Endereço:</span>
+                  <span className="font-medium  text-gray-500">{client.local}</span>
 
-                  <span className="font-medium">Valor s/ IVA:</span>
-                  <span>{client.valor} €</span>
+                  <span className="font-medium  text-gray-500">Valor s/ IVA:</span>
+                  <span className="font-medium  text-gray-500">{client.valor} €</span>
 
-                  <span className="font-medium">Taxa IVA:</span>
-                  <span>{client.taxaIva ? `${client.taxaIva}%` : "N/A"}</span>
+                  <span className="font-medium  text-gray-500">Taxa IVA:</span>
+                  <span className="font-medium  text-gray-500">{client.taxaIva ? `${client.taxaIva}%` : "N/A"}</span>
 
-                  <span className="font-medium">Valor c/ IVA:</span>
-                  <span>{client.valorTotal} €</span>
+                  <span className="font-medium text-gray-500">Valor c/ IVA:</span>
+                  <span className="font-medium  text-gray-500">{client.valorTotal} €</span>
 
-                  <span className="font-medium">Data:</span>
-                  <span>{client.data}</span>
+                  <span className="font-medium text-gray-500">Descarga:</span>
+                  <span className="font-medium text-gray-500">{client.descarga} €</span>
 
-                  <span className="font-medium">Hora:</span>
-                  <span>{client.hora}</span>
+                  <span className="font-medium text-gray-500">Data:</span>
+                  <span className="font-medium text-gray-500">{client.data}</span>
+
+                  <span className="font-medium text-gray-500">Hora:</span>
+                  <span className="font-medium text-gray-500">{client.hora}</span>
                 </div>
                 <div className="flex justify-between items-center mt-3 mb-1">
                   <div className="flex items-center">
-                    <span className="font-medium mr-2">Trabalho:</span>
+                    <span className="font-medium mr-2 text-gray-500">Trabalho:</span>
                     <div
-                      className={`w-7 h-7 rounded-full flex items-center justify-center cursor-pointer transition-colors ${
+                      className={`w-7 h-7 rounded-full flex items-center justify-center  cursor-pointer transition-colors ${
                         client.trabalhoConcluido ? "bg-green-500" : "bg-gray-200"
                       }`}
                       onClick={() => toggleTrabalhoStatus(client.nif)}
@@ -350,7 +353,7 @@ const ClientList = () => {
                   </div>
 
                   <div className="flex items-center">
-                    <span className="font-medium mr-2">Pagamento:</span>
+                    <span className="font-medium mr-2 text-gray-500">Pagamento:</span>
                     <div
                       className={`w-7 h-7 rounded-full flex items-center justify-center cursor-pointer transition-colors ${
                         client.pagamentoRealizado ? "bg-green-500" : "bg-gray-200"

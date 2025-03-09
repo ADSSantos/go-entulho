@@ -8,6 +8,7 @@ export interface Client {
   valorIva: string;
   taxaIva: "6" | "23" | "";
   valorTotal: string;
+  descarga: string;
   data: string;
   hora: string;
   trabalhoConcluido: boolean;

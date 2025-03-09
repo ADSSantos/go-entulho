@@ -5,7 +5,7 @@ import CustomInput from "@/components/ui/CustomInput";
 import { Button } from "@/components/ui/button";
 import { Client } from "@/types/client";
 //import { motion, AnimatePresence } from "framer-motion";
-import { FaUser, FaPhone, FaMapMarkerAlt, FaEuroSign, FaCalendarAlt, FaClock } from "react-icons/fa";
+import { FaUser, FaPhone, FaMapMarkerAlt, FaEuroSign, FaCalendarAlt, FaClock, FaEnvira, FaLevelDownAlt, FaPortrait } from "react-icons/fa";
 
 interface FormProps {
   onSubmitSuccess: (newClient: Client) => void;
@@ -27,6 +27,7 @@ const Form = ({ onSubmitSuccess, editingClient, onCancelEdit }: FormProps) => {
       valorIva: "",
       taxaIva: "",
       valorTotal: "",
+      descarga: "",
       data: "",
       hora: "",
       trabalhoConcluido: false,
@@ -57,6 +58,7 @@ const Form = ({ onSubmitSuccess, editingClient, onCancelEdit }: FormProps) => {
         valorIva: "",
         taxaIva: "",
         valorTotal: "",
+        descarga: "",
         data: "",
         hora: "",
         trabalhoConcluido: false,
@@ -196,6 +198,7 @@ const Form = ({ onSubmitSuccess, editingClient, onCancelEdit }: FormProps) => {
         valorIva: "",
         taxaIva: "",
         valorTotal: "",
+        descarga: "",
         data: "",
         hora: "",
         trabalhoConcluido: false,
@@ -217,7 +220,7 @@ const Form = ({ onSubmitSuccess, editingClient, onCancelEdit }: FormProps) => {
         onChange={handleChange}
         onBlur={handleBlur}
         error={errors.nif}
-        icon={<FaUser className="text-gray-400" />}
+        icon={<FaPortrait className="text-gray-400" />}
       />
       <CustomInput
         label="Nome"
@@ -243,7 +246,7 @@ const Form = ({ onSubmitSuccess, editingClient, onCancelEdit }: FormProps) => {
         placeholder="Tipo de entulho"
         value={formData.tipo}
         onChange={handleChange}
-        icon={<FaMapMarkerAlt className="text-gray-400" />}
+        icon={<FaEnvira  className="text-gray-400" />}
       />
       <CustomInput
         label="Endereço"
@@ -282,6 +285,16 @@ const Form = ({ onSubmitSuccess, editingClient, onCancelEdit }: FormProps) => {
           <p className="font-medium">Valor com IVA: {formData.valorIva} €</p>
         </div>
       )}
+
+<CustomInput
+        label="Descarga (€)"
+        id="descarga"
+        placeholder="Valor Da Descarga"
+        value={formData.descarga}
+        onChange={handleChange}
+        icon={<FaLevelDownAlt className="text-gray-400" />}
+      />
+
       <CustomInput
         label="Data"
         id="data"
