@@ -1,8 +1,8 @@
 "use client";
 
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
-import ClientList  from "@/components/ui/ClientList";
-import { motion } from 'framer-motion';
+import ClientList from "@/components/ui/ClientList";
+import { motion } from "framer-motion";
 
 export default function Home() {
   return (
@@ -15,7 +15,7 @@ export default function Home() {
         className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 px-3 shadow-md"
       >
         <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold font-sans">GO-ENTULHO</h1>
+          <h1 className="text-2xl font-bold font-sans mx-auto transform translate-x-7">GO-ENTULHO</h1>
           {/* Botão de alternar tema */}
           <ThemeToggle />
         </div>

@@ -209,19 +209,21 @@ const ClientList = () => {
   // Renderização condicional para evitar erros de hidratação
   if (!isMounted) {
     return (
-      <div className="w-full px-3 py-4 max-w-lg mx-auto">
-        <h1 className="text-xl font-bold mb-4">Adicionar Novo Cliente</h1>
+      <div className="center-container debug-border-red">
+  <h6 className="text-xl font-bold dark:text-gray-500 text-center debug-border-blue">Adicionar Novo Cliente</h6>
         <Form onSubmitSuccess={handleClientSubmit} editingClient={null} onCancelEdit={handleCancelEdit} />
         <h2 className="text-lg font-bold mt-6 mb-3">Lista de Clientes</h2>
         <p className="text-center text-gray-500 py-4">Carregando...</p>
       </div>
     );
   }
+  // Variavel responsavel por definir a cor do texto nas tags span
+  const textColor = "text-gray-500";
 
   return (
-    <div className="w-full px-3 py-4 max-w-lg mx-auto">
+    <div className="w-full px-3 py-4 max-w-lg mx-auto ">
       <Toaster /> {/* Adiciona o componente Toaster para exibir as mensagens */}
-      <h1 className="text-xl font-bold mb-4">
+      <h1 className="text-xl font-bold mb-4 ml-4 text-center dark:text-gray-300">
         {editingClient ? "Editar Cliente" : "Adicionar Novo Cliente"}
       </h1>
 
@@ -231,15 +233,15 @@ const ClientList = () => {
         onCancelEdit={handleCancelEdit}
       />
 
-      <h2 className="text-lg font-bold mt-6 mb-3">Lista de Clientes</h2>
+      <h2 className="text-lg font-bold mt-6 mb-3 dark:text-gray-300">Lista de Clientes</h2>
 
       {/* Campo de busca por número de telefone */}
-      <div className="flex flex-col mb-4 p-3 bg-gray-50 rounded-lg shadow-sm">
-        <div className="w-full">
-          <label htmlFor="searchNumber" className="block text-sm font-medium text-gray-700 mb-1">
+      <div className="flex flex-col mb-4 p-3  rounded-lg shadow-sm">
+        <div className="w-full" >
+          <label htmlFor="searchNumber" className="block text-sm font-medium dark:text-gray-300 mb-1">
             Buscar por número
           </label>
-          <div className="flex gap-2">
+          <div className="flex gap-2 ">
             <input
               type="text"
               id="searchNumber"
@@ -260,20 +262,20 @@ const ClientList = () => {
       </div>
 
       {/* Ordenação */}
-      <div className="flex items-center gap-2 mb-4">
+      <div className="flex items-center gap-2 mb-4 ">
         <span className="text-sm font-medium">Ordenar por:</span>
         <select
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value as "nome" | "data" | "valorTotal")}
           className="p-2 border border-gray-300 rounded-md"
         >
-          <option value="nome">Nome</option>
-          <option value="data">Data</option>
-          <option value="valorTotal">Valor Total</option>
+          <option className=" dark:bg-gray-400" value="nome">Nome</option>
+          <option className=" dark:bg-gray-400" value="data">Data</option>
+          <option className=" dark:bg-gray-400" value="valorTotal">Valor Total</option>
         </select>
         <button
           onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
-          className="p-2 bg-gray-200 rounded-md hover:bg-gray-300"
+          className="p-2 dark:bg-gray-400 rounded-md hover:bg-gray-300"
         >
           <ArrowUpDown size={16} />
         </button>
@@ -282,7 +284,7 @@ const ClientList = () => {
       {clients.length === 0 ? (
         <p className="text-center text-gray-500 py-4">Nenhum cliente cadastrado.</p>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-4" >
           <AnimatePresence>
             {sortedClients.map((client) => (
               <motion.div
@@ -305,43 +307,44 @@ const ClientList = () => {
                     : "bg-white"
                 }`}
               >
-                <h3 className="text-xl font-bold text-gray-500">{client.nome}</h3>
+                
+                <h3  className={`text-xl font-bold ${textColor}`}>{client.nome}</h3>
                 <div className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1 mt-2 ">
-                  <span className="font-medium text-gray-500">NIF:</span>
-                  <span  className="font-medium text-gray-500">{client.nif}</span>
+                  <span className={`font-medium ${textColor}`}>NIF:</span>
+                  <span className={`font-medium  ${textColor}`}>{client.nif}</span>
 
-                  <span className="font-medium  text-gray-500 ">Número:</span>
-                  <span className={foundClientNif === client.nif ? " font-bold bg-yellow-200 px-1" : "text-gray-500 font-medium "} >
+                  <span className={`font-medium  ${textColor}`}>Número:</span>
+                  <span className={foundClientNif === client.nif ? "font-bold dark: bg-yellow-400 px-1" : `font-medium ${textColor}`} >
                     {client.numero}
                   </span>
 
-                  <span className="font-medium  text-gray-500">Tipo:</span>
-                  <span className="font-medium  text-gray-500">{client.tipo}</span>
+                  <span className={`font-medium  ${textColor}`}>Tipo:</span>
+                  <span className={`font-medium  ${textColor}`}>{client.tipo}</span>
 
-                  <span className="font-medium  text-gray-500">Endereço:</span>
-                  <span className="font-medium  text-gray-500">{client.local}</span>
+                  <span className={`font-medium  ${textColor}`}>Endereço:</span>
+                  <span className={`font-medium  ${textColor}`}>{client.local}</span>
 
-                  <span className="font-medium  text-gray-500">Valor s/ IVA:</span>
-                  <span className="font-medium  text-gray-500">{client.valor} €</span>
+                  <span className={`font-medium  ${textColor}`}>Valor s/ IVA:</span>
+                  <span className={`font-medium  ${textColor}`}>{client.valor} €</span>
 
-                  <span className="font-medium  text-gray-500">Taxa IVA:</span>
-                  <span className="font-medium  text-gray-500">{client.taxaIva ? `${client.taxaIva}%` : "N/A"}</span>
+                  <span className={`font-medium  ${textColor}`}>Taxa IVA:</span>
+                  <span className={`font-medium  ${textColor}`}>{client.taxaIva ? `${client.taxaIva}%` : "N/A"}</span>
 
-                  <span className="font-medium text-gray-500">Valor c/ IVA:</span>
-                  <span className="font-medium  text-gray-500">{client.valorTotal} €</span>
+                  <span className={`font-medium  ${textColor}`}>Valor c/ IVA:</span>
+                  <span className={`font-medium  ${textColor}`}>{client.valorTotal} €</span>
 
-                  <span className="font-medium text-gray-500">Descarga:</span>
-                  <span className="font-medium text-gray-500">{client.descarga} €</span>
+                  <span className={`font-medium  ${textColor}`}>Descarga:</span>
+                  <span className={`font-medium  ${textColor}`}>{client.descarga} €</span>
 
-                  <span className="font-medium text-gray-500">Data:</span>
-                  <span className="font-medium text-gray-500">{client.data}</span>
+                  <span className={`font-medium  ${textColor}`}>Data:</span>
+                  <span className={`font-medium  ${textColor}`}>{client.data}</span>
 
-                  <span className="font-medium text-gray-500">Hora:</span>
-                  <span className="font-medium text-gray-500">{client.hora}</span>
+                  <span className={`font-medium  ${textColor}`}>Hora:</span>
+                  <span className={`font-medium  ${textColor}`}>{client.hora}</span>
                 </div>
                 <div className="flex justify-between items-center mt-3 mb-1">
                   <div className="flex items-center">
-                    <span className="font-medium mr-2 text-gray-500">Trabalho:</span>
+                    <span className={`font-medium mr-2 ${textColor}`}>Trabalho:</span>
                     <div
                       className={`w-7 h-7 rounded-full flex items-center justify-center  cursor-pointer transition-colors ${
                         client.trabalhoConcluido ? "bg-green-500" : "bg-gray-200"
@@ -353,7 +356,7 @@ const ClientList = () => {
                   </div>
 
                   <div className="flex items-center">
-                    <span className="font-medium mr-2 text-gray-500">Pagamento:</span>
+                    <span className={`font-medium mr-2 ${textColor}`}>Pagamento:</span>
                     <div
                       className={`w-7 h-7 rounded-full flex items-center justify-center cursor-pointer transition-colors ${
                         client.pagamentoRealizado ? "bg-green-500" : "bg-gray-200"

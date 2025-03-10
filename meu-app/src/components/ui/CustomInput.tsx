@@ -10,6 +10,7 @@ interface CustomInputProps {
   error?: string;
   type?: string;
   icon?: React.ReactNode; // Adicionando a propriedade icon
+  inputClassName?: string; // Nova prop para classes do input
 }
 
 const CustomInput = ({
@@ -22,6 +23,7 @@ const CustomInput = ({
   error,
   type = "text",
   icon, // Recebendo a propriedade icon
+  inputClassName,
 }: CustomInputProps) => {
   return (
     <div className="space-y-1">
@@ -45,7 +47,7 @@ const CustomInput = ({
             error ? "border-red-500" : "border-gray-300"
           } rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${
             icon ? "pl-10" : ""
-          }`}
+          } ${inputClassName}`}  // Aplicando as classes do input
         />
       </div>
       {error && (

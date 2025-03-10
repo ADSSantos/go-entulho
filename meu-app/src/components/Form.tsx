@@ -209,10 +209,12 @@ const Form = ({ onSubmitSuccess, editingClient, onCancelEdit }: FormProps) => {
     setIsSubmitting(false);
   };
 
+  
+
   return (
     <form className="space-y-4 sm:space-y-5" onSubmit={handleSubmit}>
       {/* Campos do formulário com ícones e animações */}
-      <CustomInput
+      <CustomInput 
         label="NIF"
         id="nif"
         placeholder="000-000-000"
@@ -221,6 +223,7 @@ const Form = ({ onSubmitSuccess, editingClient, onCancelEdit }: FormProps) => {
         onBlur={handleBlur}
         error={errors.nif}
         icon={<FaPortrait className="text-gray-400" />}
+        inputClassName="placeholder:text-gray-300"
       />
       <CustomInput
         label="Nome"
@@ -229,6 +232,7 @@ const Form = ({ onSubmitSuccess, editingClient, onCancelEdit }: FormProps) => {
         value={formData.nome}
         onChange={handleChange}
         icon={<FaUser className="text-gray-400" />}
+        inputClassName="placeholder:text-gray-300"
       />
       <CustomInput
         label="Número"
@@ -239,6 +243,7 @@ const Form = ({ onSubmitSuccess, editingClient, onCancelEdit }: FormProps) => {
         onBlur={handleBlur}
         error={errors.numero}
         icon={<FaPhone className="text-gray-400" />}
+        inputClassName="placeholder:text-gray-300"
       />
       <CustomInput
         label="Tipo de Entulho"
@@ -247,6 +252,7 @@ const Form = ({ onSubmitSuccess, editingClient, onCancelEdit }: FormProps) => {
         value={formData.tipo}
         onChange={handleChange}
         icon={<FaEnvira  className="text-gray-400" />}
+        inputClassName="placeholder:text-gray-300"
       />
       <CustomInput
         label="Endereço"
@@ -255,6 +261,7 @@ const Form = ({ onSubmitSuccess, editingClient, onCancelEdit }: FormProps) => {
         value={formData.local}
         onChange={handleChange}
         icon={<FaMapMarkerAlt className="text-gray-400" />}
+        inputClassName="placeholder:text-gray-300"
       />
       <CustomInput
         label="Valor do Serviço (€)"
@@ -264,6 +271,7 @@ const Form = ({ onSubmitSuccess, editingClient, onCancelEdit }: FormProps) => {
         onChange={handleChange}
         error={errors.valor}
         icon={<FaEuroSign className="text-gray-400" />}
+        inputClassName="placeholder:text-gray-300"
       />
       <div className="relative">
         <label className="block text-sm sm:text-base font-medium text-gray-700 mb-1">
@@ -275,9 +283,9 @@ const Form = ({ onSubmitSuccess, editingClient, onCancelEdit }: FormProps) => {
           onChange={handleChange}
           className="w-full p-3 text-base border-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
         >
-          <option value="">Selecione a taxa de IVA</option>
+          <option value="" className=" text-red-300">Selecione a taxa de IVA</option>
           <option value="6" className="text-gray-600">IVA 6%</option>
-          <option value="23">IVA 23%</option>
+          <option value="23" className="text-gray-600">IVA 23%</option>
         </select>
       </div>
       {formData.valorIva && (
@@ -292,7 +300,8 @@ const Form = ({ onSubmitSuccess, editingClient, onCancelEdit }: FormProps) => {
         placeholder="Valor Da Descarga"
         value={formData.descarga}
         onChange={handleChange}
-        icon={<FaLevelDownAlt className="text-gray-300" />}
+        icon={<FaLevelDownAlt className="text-gray-400" />}
+        inputClassName="placeholder:text-gray-300"
       />
 
       <CustomInput
@@ -303,6 +312,7 @@ const Form = ({ onSubmitSuccess, editingClient, onCancelEdit }: FormProps) => {
         value={formData.data}
         onChange={handleChange}
         icon={<FaCalendarAlt className="text-gray-400" />}
+        
       />
       <CustomInput
         label="Hora"
