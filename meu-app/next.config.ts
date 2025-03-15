@@ -1,10 +1,9 @@
-/** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export', // Habilita a exportação estática
-  images: {
-    unoptimized: true, // Desativa a otimização de imagens para exportação estática
+  output: 'export',
+  generateBuildId: () => {
+    // Gere um ID único para a build (por exemplo, um timestamp ou hash)
+    return `build-${Date.now()}`;
   },
 };
-
 
 module.exports = nextConfig;

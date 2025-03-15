@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">GO-Entulho-Gerente</string>
-    <string name="title_activity_main">GO-Entulho-Gerente</string>
+    <string name="app_name">GO-Entulho</string>
+    <string name="title_activity_main">GO-Entulho</string>
     <string name="package_name">com.goentulho.meuapp</string>
     <string name="custom_url_scheme">com.goentulho.meuapp</string>
 </resources>

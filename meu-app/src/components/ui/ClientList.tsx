@@ -107,7 +107,7 @@ const ClientList = () => {
       // Exibe um toast personalizado com botões de confirmação e cancelamento
       toast.custom(
         (t) => (
-          <div className="bg-white p-4 rounded-lg shadow-lg flex flex-col items-center">
+          <div className="dark:bg-gray-800/20 p-4 rounded-lg shadow-lg flex flex-col items-center backdrop-blur-lg bg-opacity-75">
             <p className="text-lg font-medium mb-4">Tem certeza que deseja excluir este cliente?</p>
             <div className="flex gap-3">
               <button
@@ -121,7 +121,9 @@ const ClientList = () => {
                   localStorage.setItem("clients", JSON.stringify(updatedClients));
   
                   // Exibe uma mensagem de sucesso
-                  toast.success("Cliente excluído com sucesso!");
+                  toast.success("Cliente excluído com sucesso!", {
+                    duration: 1000, // 1 segundos
+                  });
   
                   // Fecha o toast de confirmação
                   toast.dismiss(t.id);
@@ -293,8 +295,8 @@ const ClientList = () => {
                   clientRefs.current[client.nif] = el;
                 }}
                 initial={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.5, x: 100, rotate: 45 }}
-                transition={{ duration: 0.3 }}
+                exit={{ opacity: 0, scale: 0.1, x: 100, rotate: 360 }}
+                transition={{ duration: 1.5, ease: [0.4, 0, 0.2, 1] }}
                 className={`border-2 rounded-lg p-4 shadow transition-all duration-300 ${
                   client.trabalhoConcluido && client.pagamentoRealizado
                     ? "border-l-8 border-l-green-500"

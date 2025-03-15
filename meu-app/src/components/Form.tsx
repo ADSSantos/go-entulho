@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Client } from "@/types/client";
 //import { motion, AnimatePresence } from "framer-motion";
 import { FaUser, FaPhone, FaMapMarkerAlt, FaEuroSign, FaCalendarAlt, FaClock, FaEnvira, FaLevelDownAlt, FaPortrait } from "react-icons/fa";
+import { enviarDadosParaMake } from '../services/api';
 
 interface FormProps {
   onSubmitSuccess: (newClient: Client) => void;
@@ -177,14 +178,24 @@ const Form = ({ onSubmitSuccess, editingClient, onCancelEdit }: FormProps) => {
       return;
     }
 
-    // Simula uma requisição assíncrona
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    // Envia os dados para o componente pai
-    onSubmitSuccess(formData);
-
-    // Feedback visual
-    //alert(isEditing ? "Cliente atualizado com sucesso!" : "Cliente adicionado com sucesso!");
+    try {// Envia os dados para o componente pai
+      onSubmitSuccess(formData);
+      
+      
+      // Envia os dados para o Make
+      await enviarDadosParaMake(formData);
+      
+      
+      // Feedback visual
+      alert(isEditing ? "Cliente atualizado com sucesso!" : "Cliente adicionado com sucesso!");
+    } catch (error) {
+      console.error("Erro ao enviar dados para o Make:", error);
+      //alert("Erro ao enviar dados. Por favor, tente novamente.");
+    } finally {
+      setIsSubmitting(false);
+      
+      
+    }
 
     // Limpa o formulário se não estiver editando
     if (!isEditing) {
@@ -205,9 +216,8 @@ const Form = ({ onSubmitSuccess, editingClient, onCancelEdit }: FormProps) => {
         pagamentoRealizado: false,
       });
     }
-
-    setIsSubmitting(false);
   };
+
 
   
 
